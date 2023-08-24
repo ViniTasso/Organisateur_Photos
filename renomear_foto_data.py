@@ -1,11 +1,23 @@
 #!/usr/bin/env python3
 import os
+#used on the movimentation of file
 import shutil
 from datetime import datetime
 from PIL import Image
 
 
 class PhotoOrganizer:
+    """_summary_
+    Photo Organizer a été conçu pour faciliter l'organisation 
+    des photos, avec un nom par défaut et des dossiers par année. 
+    Les paramètres peuvent être modifiés par un formulaire.
+
+    Raises:
+        NotImplementedError: _description_
+
+    Returns:
+        _type_: _description_
+    """
     DATETIME_EXIF_INFO_ID = 36867
     photoExtensions = ['jpg', 'jpeg', 'png']
     videoExtensions = ['mp4', 'avi']
@@ -17,6 +29,17 @@ class PhotoOrganizer:
 
     #obtem a data que foto foi tirada
     def photo_shooting_date_created(self, file):
+        """Gets and manipulate the metadata of the file
+
+        :param file: The file location of the photo
+        :type file: str
+        :param self: refers to own class
+            (default of py)
+        :returns: a date alread managed as the need
+        :rtype: list
+        """
+        #reStructuredText Docstrings. Python's own. For great documentations.
+        
         date = None
         photo = Image.open(file)
         if hasattr(photo, '_getexif'):
@@ -39,23 +62,45 @@ class PhotoOrganizer:
         return date
 
     def renomeia_arquivo(self, file:str):
+        """
+        Parameters
+        ----------
+        name : str
+            The name of the file (is not optional)
+        NotImplementedError
+            If no file is passed in as a parameter.
+        """
+        #NumPy/SciPy Docstrings
+
         data = self.getDataFile(file)
         if data != None:
             #renomeia para data e hora juntos
             #data = data.strftime('%Y%m%d') + data.strftime('%H%M%S')
             #renomeia para data e horas separados por traço
-            dataNome = data.strftime('%Y-%m-%d ') + data.strftime('%H%M%S')
+            dataNome = data.strftime('%Y%m%d ') + data.strftime('%H%M%S')
             #os.path.split(file)
-            dataNome = dataNome+"."+file.split(".")[-1]
+            dataNome = f"{dataNome}."+file.split(".")[-1]
             os.rename(file, dataNome)
             self.move_photo(dataNome, data)
+            if file is None:
+                raise NotImplementedError("No args are not supported!")
 
     def video_shooting_date_created(self, file:str): 
         return None
     
-
     def move_photo(self, file, data):
-        #new_folder = self.folder_path_from_photo_date(file)
+        """Gets and prints the spreadsheet's header columns
+
+        @type file: str
+        @param file: The name of file,  considering it's in the same directory
+        @type data: Date
+        @param data: Date that the picture has been taken
+            (default is False)
+        @returns: need to be implemented, a bool return
+        @NotImplementedError: if the file is not found
+        """
+        #Epytext Docstrings. For Java developers.
+
         new_folder = data.strftime('%Y')
         if not os.path.exists(new_folder):
             os.makedirs(new_folder)
