@@ -4,7 +4,7 @@ import os
 import shutil
 from datetime import datetime
 from PIL import Image
-import exifread, logging
+import exifread
 
 
 class PhotoOrganizer:
@@ -146,7 +146,7 @@ class PhotoOrganizer:
         except:
             return False
     
-    def reconnaîtreModèle(self, nomFichier, dataM):
+    def reconnaitreModele(self, nomFichier, dataM):
         wapp = nomFichier.split("-")
         dataNouveau = None
         for i in wapp:
@@ -157,7 +157,7 @@ class PhotoOrganizer:
                     print("Não era data :/")
         return dataNouveau
     
-    def testerLaDifférence(self, data1, data2, tolerance: int):
+    def testerLaDifference(self, data1, data2, tolerance: int):
         """_summary_
             Vérifie si les dates sont proches en fonction de la tolérance définie
         Returns:
@@ -202,14 +202,14 @@ class PhotoOrganizer:
             dataMod = self.dateModificationPhoto(nomFichier)
             dateDefaut = None
             if dataShot and dataMod:
-                if self.testerLaDifférence(dataShot, dataMod, 3):
+                if self.testerLaDifference(dataShot, dataMod, 3):
                     dateDefaut = dataShot
                 else:
-                    dataNom = self.reconnaîtreModèle(nomFichier, dataShot)
-                    if self.testerLaDifférence(dataNom, dataMod, 3):
+                    dataNom = self.reconnaitreModele(nomFichier, dataShot)
+                    if self.testerLaDifference(dataNom, dataMod, 3):
                         dateDefaut = dataNom
             else:
-                dataNom = self.reconnaîtreModèle(nomFichier, dataMod)
+                dataNom = self.reconnaitreModele(nomFichier, dataMod)
                 if not dataNom:
                     #reconhece que é gopro
                     f = open(nomFichier, 'rb') # Open image file for reading (binary mode)
@@ -220,9 +220,10 @@ class PhotoOrganizer:
                     f.close()
                     print("Nesse ponto, a data que a foto foi tirada \n é muito diferente"+
                            "da data que foi modificada, \n e pra piorar não tem padrão de data no nome."+
-                           "\nverificar com o usuário se ele quer colocar uma data, se não, colocar nada.")
+                           "\nverificar com o usuário se ele quer colocar uma data, se não, colocar nada."+
+                           "\nNot Implemented.")
                 else:
-                    if self.testerLaDifférence(dataNom, dataMod, 3):
+                    if self.testerLaDifference(dataNom, dataMod, 3):
                         dateDefaut = dataMod
 
             #data = self.obtenirFichierDate(nomFichier)
@@ -241,6 +242,30 @@ class PhotoOrganizer:
             print("Encontrou video o video: " + video[index]+". No index:" + str(index))
             #self.renomeia_arquivo(nomFichier)
 
+"""
+    Ideia
+        Criar um UI para escolher algumas funções, básicas e avançadas
 
+        Tratamento para renomear com data.
+            Após definir qual a data que será utilizada ->
+                1 Colocar a data no começo e manter o nome anterior no final
+                2 Data inicio com um novo nome definido pelo usuario
+                3 Data inicio utilizar o nome da pasta
+            Definir a data conforme os meta dados
+
+        Separar em pastas
+            Por ano
+            Por mês
+            
+        Criar meta dados
+            Palavras chaves conforme a escolha do usuário
+            palavras chaves usando o nome da pasta
+
+        Definir qual aparelho usado
+            Se não tiver salvo, dar a opção de escrever "GoPro Hero 6" como aparelho usado etc
+                Num futuro, consegue separar quais fotos foram tirada por qual aparelho
+            
+"""
 PO = PhotoOrganizer()
 PO.organize()
+   
